@@ -1,0 +1,140 @@
+# ================
+# DNA Segmentation
+# ================
+
+dna:
+
+  # Smooth
+
+  BILATERAL_SIGMA_COLOR: 0.05
+  BILATERAL_SIGMA_SPATIAL: 1
+
+  # Threshold
+
+  THRESHOLD_FACTOR: 0.5
+
+  # Sparse Segmentation
+
+  LOG_SPARSE:
+    MIN_SIG: 2 #
+    MAX_SIG: 3 #
+    NUM_SIG: 9 #
+    THRESH: 0.01
+    OVERLAP: 0.1 #
+
+  WATERSHED_CONN: [[0,1,0],[1,1,1],[0,1,0]]
+  WATERSHED_COMPACTNESS: 1000
+  WATERSHED_MIN_SZ: 15 #
+
+  # Clump Detection
+
+  SEG_SINGLE_MIN_SZ: 100 # min size of single cells #
+  SEG_SINGLE_MAX_SZ: 150 # max size of single cells #
+
+  SEG_CLUMP_SOLIDITY: 0.95
+
+  SEG_CLOSE_HOLES: 2
+
+  # Dense Segmentation
+
+  LOG_DENSE:
+    MIN_SIG: 2 #
+    MAX_SIG: 2 #
+    NUM_SIG: 2 #
+    THRESH: 0.01
+    OVERLAP: 0
+  
+
+# ================
+# EdU Segmentation
+# ================
+
+edu:
+
+  # Smooth
+  
+  BILATERAL_SIGMA_COLOR: 0.05
+  BILATERAL_SIGMA_SPATIAL: 1
+
+  # Threshold
+
+  THRESHOLD_FACTOR: 0.75
+
+  # Sparse Segmentation
+  LOG_SPARSE:
+    MIN_SIG: 2
+    MAX_SIG: 3
+    NUM_SIG: 9
+    THRESH: 0
+    OVERLAP: 0.1
+
+  WATERSHED_CONN: [[0,1,0],[1,1,1],[0,1,0]]
+  WATERSHED_MIN_SZ: 15
+  WATERSHED_COMPACTNESS: 1000
+
+  # Dense Segmentation
+  LOG_DENSE:
+    MIN_SIG: 2
+    MAX_SIG: 2
+    NUM_SIG: 2
+    THRESH: 0
+    OVERLAP: 0.05
+
+  # Clump Detection
+
+  SEG_SINGLE_MIN_SZ: 75 # min size of single cells
+  SEG_SINGLE_MAX_SZ: 150 # max size of single cells
+
+  SEG_CLUMP_SOLIDITY: 0.9
+
+  SEG_CLOSE_HOLES: 2
+
+# ===================
+# Goblet Segmentation
+# ===================
+
+goblet:
+
+  # Smooth
+  MEDIAN_FILTER_SZ: 3
+
+  # Threshold
+
+  THRESHOLD_FACTOR: 1
+
+  # Segment
+
+  LOG_BLOB: 
+    MIN_SIG: 5
+    MAX_SIG: 12
+    NUM_SIG: 7
+    THRESH: 0.01
+    OVERLAP: 0.2
+
+  WATERSHED_CONN: [[0,1,0],[1,1,1],[0,1,0]]
+  WATERSHED_MIN_SZ: 50
+  WATERSHED_COMPACTNESS: 1000
+
+# ========================
+# Stem Segmentation
+# ========================
+
+crypt:
+
+  # Crypt Threshold
+
+  DNA_FACTOR: 0.3
+  THRESH: 0.07
+
+  # Crypt Processing
+  
+  MORPH_CLOSING_SZ: 4
+  MORPH_OPENING_SZ: 2
+  MIN_SZ: 400
+
+stem:
+
+  # Identify Stem 
+  
+  PARTIAL_RATIO: 1.5
+  PANETH: False

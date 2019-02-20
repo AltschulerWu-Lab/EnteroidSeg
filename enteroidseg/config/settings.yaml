@@ -1,0 +1,19 @@
+# ==============================================================================
+# This config file defines setting parameters
+# ==============================================================================
+
+paths:
+  result: 'output/{object_type:s}_pipeline_result.png'
+  segmentation: 'output/{object_type:s}_segmentation.tiff'
+  overlay: 'output/{object_type:s}_overlay.png'
+
+impaths:
+  crypt: 'images/im_lgr5.tiff'
+  crypt_obj: 'images/crypt_obj.tiff'
+  dna: 'images/im_hoechst.tiff'
+  dna_obj: 'images/dna_obj.tiff'
+  edu: 'images/im_edu.tiff'
+  goblet: 'images/im_muc2.tiff'
+  stem: 'images/im_lgr5.tiff'
+
+max_px_val: 4095

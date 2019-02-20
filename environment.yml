@@ -1,0 +1,11 @@
+name: enteroid_analysis
+channels:
+- defaults
+dependencies:
+- python=3.7.2
+- pip:
+  - matplotlib==3.0.2
+  - numpy==1.16.1
+  - pyyaml==3.13
+  - scikit-image==0.14.2
+  - scipy==1.2.1
