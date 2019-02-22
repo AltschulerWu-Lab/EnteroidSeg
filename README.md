@@ -1,6 +1,6 @@
 # EnteroidSeg
 
-EnteroidSeg is an example of image processing pipeline developed to identify nuclei and cell-types in the 2d enteroid cultures [^ref1]. Example code for segmentation of nuclei, EdU+ nuclei, stem cells, and goblet cells are provided. This set of code accompanies a paper on 2d enteroid culture and analysis, which should be cited for this code [^ref2].
+EnteroidSeg is an example of image processing pipeline developed to identify nuclei and cell-types in the 2d enteroid cultures [\[1\]](#ref1). Example code for segmentation of nuclei, EdU+ nuclei, stem cells, and goblet cells are provided. This set of code accompanies a paper on 2d enteroid culture and analysis, which should be cited for this code [\[2\]](#ref2).
 
 ## Setup
 
@@ -86,5 +86,5 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## References
 
-[^ref1]: Thorne, C.A.\*, Chen, I.W.\*, Sanman, L.E., Cobb, M.H., Wu, L.F., and Altschuler, S.J. (2018). Enteroid Monolayers Reveal an Autonomous WNT and BMP Circuit Controlling Intestinal Epithelial Growth and Organization. Dev. Cell 44, 624–633.e4.
-[^ref2]: (TODO: cite methods paper)
+<a name="ref1">1</a>: Thorne, C.A.\*, Chen, I.W.\*, Sanman, L.E., Cobb, M.H., Wu, L.F., and Altschuler, S.J. (2018). Enteroid Monolayers Reveal an Autonomous WNT and BMP Circuit Controlling Intestinal Epithelial Growth and Organization. Dev. Cell 44, 624–633.e4.
+<a name="ref2">2</a>: (TODO: cite methods paper)
