@@ -87,4 +87,5 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## References
 
 <a name="ref1">1</a>: Thorne, C.A.\*, Chen, I.W.\*, Sanman, L.E., Cobb, M.H., Wu, L.F., and Altschuler, S.J. (2018). Enteroid Monolayers Reveal an Autonomous WNT and BMP Circuit Controlling Intestinal Epithelial Growth and Organization. Dev. Cell 44, 624–633.e4.
+
 <a name="ref2">2</a>: (TODO: cite methods paper)
