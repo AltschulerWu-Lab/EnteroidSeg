@@ -1,5 +1,6 @@
-  matplotlib
-  numpy
-  pyyaml
-  scikit-image
-  scipy
+python (3.7)
+matplotlib (3.0.2)
+numpy (1.16.1)
+pyyaml (3.13)
+scikit-image (0.14.2)
+scipy (1.2.1)
