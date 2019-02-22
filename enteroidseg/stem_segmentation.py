@@ -1,13 +1,18 @@
 import segmentation
 from skimage import io
-from utils import setting
 
+# Stem Segmentation
+
+# Setup segmentation
 im_path = 'images/im_lgr5.tiff'
-dna_obj_path = 'images/dna_obj.tiff'
-crypt_obj_path = 'images/crypt_obj.tiff'
+im_dna_path = 'images/im_hoechst.tiff'
+objects_paneth_path = 'images/objects_paneth.tiff'
 
 im = io.imread(im_path)
-crypt_obj = io.imread(crypt_obj_path)
-dna_obj = io.imread(dna_obj_path)
-s = segmentation.Stem_Segmentor(im, crypt_obj, dna_obj)
+im_dna = io.imread(im_dna_path)
+objects_paneth = io.imread(objects_paneth_path)
+
+s = segmentation.Stem_Segmentor(im, im_dna, objects_paneth=objects_paneth)
+
+# Set plot=True if you want to plot and save the results of main pipeline steps
 s.run(plot=True)

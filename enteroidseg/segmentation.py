@@ -10,6 +10,11 @@ from scipy import ndimage as ndi
 from skimage import color, filters, io, measure, morphology, restoration, segmentation
 import warnings
 
+# TODO: delete this
+os.chdir('/Users/ichen/Dropbox/AWLab/manucript/2018_methods/EnteroidSeg/enteroidseg')
+import sys
+sys.path.append('/Users/ichen/Dropbox/AWLab/manucript/2018_methods/EnteroidSeg/enteroidseg')
+
 from utils import imfuns, setting
 
 class Segmentor:
@@ -30,7 +35,9 @@ class Segmentor:
 
     Args:
       im (float ndarray): image
+      object_type (str): type of object to be segmented
     """
+
     self.im = imfuns.check_im(im)
 
     self.object_type = object_type
@@ -39,7 +46,7 @@ class Segmentor:
     self.im_smooth = []
     self.im_segmented = []
 
-    self.get_settings()
+    self.get_params()
 
   def check_path(self, path):
     """Check if path directory exists"""
@@ -55,7 +62,7 @@ class Segmentor:
     return restoration.denoise_bilateral(self.im, sigma_color=self.C['BILATERAL_SIGMA_COLOR'], 
       sigma_spatial=self.C['BILATERAL_SIGMA_SPATIAL'], multichannel=False)
 
-  def get_settings(self):
+  def get_params(self):
     """Get segmentation parameter setting based on object type"""
 
     self.C = setting.seg_params[self.object_type]
@@ -87,17 +94,20 @@ class Segmentor:
     """
     pass
 
-  def run(self, plot=False):
+  def run(self, plot=False, save=True):
     """
     Runs and saves segmentation pipeline. Optionally, save results of main pipeline steps
 
     Args:
       plot (bool): if True, saves results of main pipeline steps
+      save (bool): if True, saves output of segmentation
     """
 
     self.preprocess()
     self.segment()
-    self.save()
+
+    if save:
+      self.save()
 
     if plot:
       self.plot_results(save=True, show=False)
@@ -134,8 +144,8 @@ class Segmentor:
       im (ndarray): raw image
       im_thresh (bool ndarray): thresholded image
       params (dict): segmentation parameters
-      compact (bool, optional): use compact parameter for watershed
-      line (bool, optional): if True, draw separating lines in output
+      compact (bool): use compact parameter for watershed
+      line (bool): if True, draw separating lines in output
 
     Returns:
       labeled ndarray: segmented objects
@@ -173,12 +183,11 @@ class Segmentor:
       im (ndarray): raw image
       markers (labeled ndarray): labeled seeds 
       im_thresh (ndarray): is 0 at not-cell pixels
-      compact (bool, optional): if True, use given constant. Else, use 0
-      line (bool, optional): if True, draw separating lines in output
+      compact (bool): if True, use given constant. Else, use 0
+      line (bool): if True, draw separating lines in output
 
     Returns:
       labeled ndarray: segmented image
-
     """
 
     if compact:
@@ -214,7 +223,7 @@ class Crypt_Finder(Segmentor):
     self.threshold()
 
   def segment(self):
-    self.im_segmented = measure.label(self.im_threshed)
+    self.im_segmented = measure.label(self.im_threshed>0)
 
   def threshold(self):
     """Threshold by first removing nuclear stain bleed through"""
@@ -227,8 +236,6 @@ class Crypt_Finder(Segmentor):
     self.im_threshed = imfuns.remove_small_objects(im_opened, self.C['MIN_SZ']) 
     self.im_threshed = imfuns.mask_im(self.im, self.im_threshed)
 
-    return im_subtracted, im_mask, im_closed, im_opened
-
   def plot_results(self, save=False, show=True):
     """
     Plots results of main steps in pipeline
@@ -240,11 +247,11 @@ class Crypt_Finder(Segmentor):
 
     fig, axes = plt.subplots(2, 2, figsize=(15,15), sharex=True, sharey=True)
     ax = axes.ravel()
-    ax[0].imshow(self.im, zorder=1)
+    ax[0].imshow(self.im)
     ax[0].set_title('Raw Image')
-    ax[1].imshow(self.im_threshed, zorder=1)
+    ax[1].imshow(self.im_threshed)
     ax[1].set_title('Thresholded Image')
-    ax[2].imshow(self.label2rgb(self.im_segmented), zorder=1)
+    ax[2].imshow(self.label2rgb(self.im_segmented))
     ax[2].set_title('Segmentation')
 
     plt.suptitle('{object_type:s} segmentation'.format(object_type=self.object_type))
@@ -281,8 +288,6 @@ class Goblet_Segmentor(Segmentor):
 
   def segment(self):
     markers, self.im_segmented = self.segment_watershed(self.im, self.im_thresh, self.C['LOG_BLOB'])
-
-    return markers
 
   def smooth(self):
     """
@@ -321,11 +326,11 @@ class Goblet_Segmentor(Segmentor):
 
     fig, axes = plt.subplots(1, 3, figsize=(21,7), sharex=True, sharey=True)
     ax = axes.ravel()
-    ax[0].imshow(self.im, zorder=1)
+    ax[0].imshow(self.im)
     ax[0].set_title('Raw Image')
-    ax[1].imshow(self.im_thresh, zorder=1)
+    ax[1].imshow(self.im_thresh)
     ax[1].set_title('Smoothed & Thresholded Image')
-    ax[2].imshow(self.label2rgb(self.im_segmented), zorder=1)
+    ax[2].imshow(self.label2rgb(self.im_segmented))
     ax[2].set_title('Goblet Segmentation')
 
     plt.suptitle('goblet segmentation')
@@ -386,8 +391,6 @@ class Nuclear_Segmentor(Segmentor):
     self.seg_sparse = np.copy(self.seg_firstpass)
     self.seg_sparse[self.im_clumps!=0] = 0
 
-    return seg_large_clumps, seg_mixed, seg_mixed_irregular, seg_clumps
-
   def find_irregular_objects(self, im, solidity_thresh):
     """
     Identifies irregular objects in image
@@ -438,8 +441,6 @@ class Nuclear_Segmentor(Segmentor):
     markers, self.seg_dense = self.segment_watershed(self.im_clumps, self.im_clumps, 
       self.C['LOG_DENSE'], line=True)    
 
-    return markers
-
   def segment_sparse(self):
     """
     Performs sparse segmentation
@@ -447,8 +448,6 @@ class Nuclear_Segmentor(Segmentor):
 
     markers, self.seg_firstpass = self.segment_watershed(self.im, self.im_thresh, 
       self.C['LOG_SPARSE'], compact=False)
-
-    return markers
 
   def threshold(self):
     """
@@ -476,20 +475,20 @@ class Nuclear_Segmentor(Segmentor):
     ax = axes.ravel()
 
     ax[0].set_title('Max projected image')
-    ax[0].imshow(self.im, zorder=1)
+    ax[0].imshow(self.im)
 
     ax[1].set_title('Sparse segmentation')
-    ax[1].imshow(self.label2rgb(self.seg_sparse), zorder=1)
+    ax[1].imshow(self.label2rgb(self.seg_sparse))
 
     ax[4].set_title('Thresholded image')
-    ax[4].imshow(self.im_thresh, zorder=1)
+    ax[4].imshow(self.im_thresh)
 
     ax[5].set_title('Dense segmentation')
-    ax[5].imshow(self.label2rgb(self.seg_dense), zorder=1)
+    ax[5].imshow(self.label2rgb(self.seg_dense))
 
     plt.subplot(1,2,2, sharex=ax[0], sharey=ax[0])
     plt.title('Final Segmentation')
-    plt.imshow(self.label2rgb(self.im_segmented), zorder=1)
+    plt.imshow(self.label2rgb(self.im_segmented))
 
     plt.suptitle('{object_type:s} segmentation'.format(object_type=self.object_type))
 
@@ -510,7 +509,7 @@ class EdU_Segmentor(Nuclear_Segmentor):
     Nuclear_Segmentor.__init__(self, im)
 
     self.object_type = 'edu'
-    self.get_settings()
+    self.get_params()
 
 class Stem_Segmentor(Crypt_Finder):
   """
@@ -520,18 +519,37 @@ class Stem_Segmentor(Crypt_Finder):
     crypt_mask (bool ndarray): value 1 if crypt region, 0 otherwise
   """
 
-  def __init__(self, im, objects_crypt, objects_dna):
+  def __init__(self, im, im_dna, objects_paneth=None):
     """
     See superclass Crypt_Finder
     """
     Crypt_Finder.__init__(self, im)
 
     self.object_type = 'stem'
-    self.get_settings()
+    self.get_params()
 
-    self.objects_crypt = objects_crypt
-    self.objects_dna = objects_dna
+    self.im_dna = imfuns.check_im(im_dna)
+    self.objects_paneth = objects_paneth
+
+    self.objects_crypt = self.segment_crypt()
+    self.objects_dna = self.segment_dna()
+
     # self.objects_paneth = objects_paneth
+
+  def segment_crypt(self):
+    """Segment required input objects"""
+    crypt_seg = Crypt_Finder(self.im, im_dna=self.im_dna)
+    crypt_seg.run(save=False)
+
+    return crypt_seg.im_segmented
+
+  def segment_dna(self):
+    """Segment required input objects"""
+
+    nuclei_seg = Nuclear_Segmentor(self.im_dna)
+    nuclei_seg.run(save=False)
+
+    return nuclei_seg.im_segmented
 
   def filter_paneth(self):
     """
@@ -549,8 +567,8 @@ class Stem_Segmentor(Crypt_Finder):
     where ratio of the area outside the crypt to the area inside the crypt > PARTIAL_RATIO
     """
  
-    _, _, self.im_segmented = imfuns.overlap_regions(self.objects_dna, 
-      self.objects_crypt, self.C['PARTIAL_RATIO'], extra_return=True)
+    self.im_segmented = imfuns.overlap_regions(self.objects_dna, 
+      self.objects_crypt, self.C['PARTIAL_RATIO'])
 
   def preprocess(self):
     pass
@@ -562,7 +580,7 @@ class Stem_Segmentor(Crypt_Finder):
 
     self.filter_partial()
 
-    if self.C['PANETH']:
+    if self.objects_paneth is not None:
       self.filter_paneth()
 
   def plot_results(self, save=False, show=True):
@@ -576,13 +594,13 @@ class Stem_Segmentor(Crypt_Finder):
 
     fig, axes = plt.subplots(2, 2, figsize=(15,15), sharex=True, sharey=True)
     ax = axes.ravel()
-    ax[0].imshow(self.im, zorder=1)
+    ax[0].imshow(self.im)
     ax[0].set_title('Raw Image')
-    ax[1].imshow(self.label2rgb(self.objects_crypt), zorder=1)
+    ax[1].imshow(self.label2rgb(self.objects_crypt))
     ax[1].set_title('Crypt Objects')
-    ax[2].imshow(self.label2rgb(self.objects_dna), zorder=1)
+    ax[2].imshow(self.label2rgb(self.objects_dna))
     ax[2].set_title('Nuclear Objects')
-    ax[3].imshow(self.label2rgb(self.im_segmented), zorder=1)
+    ax[3].imshow(self.label2rgb(self.im_segmented))
     ax[3].set_title('Segmentation')
 
     plt.suptitle('{object_type:s} segmentation'.format(object_type=self.object_type))

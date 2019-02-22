@@ -11,17 +11,16 @@ import warnings
 
 from utils import setting
 
-
-max_pix = {
-  'uint8': 255,
-  'uint12': 4095,
-  'uint16': 65535,
-  'float64': 1
-}
-
 def assign_centroids(im_labeled, target_objects):
   """
-  Assigned objects in im_labeled closest to centroid target objects)
+  Assigned objects in im_labeled closest to centroids of objects in target_objects)
+
+  Args:
+    im_labeled (label ndarray): segmentation image to assign to centroids
+    target_objects (label ndarray): segmentation image to determine centroid locations
+
+  Returns:
+    label ndarray: objects in im_label closest to centroids
   """
 
   centroids = [np.round(el.centroid).astype(int) for el in measure.regionprops(target_objects)]
@@ -63,23 +62,14 @@ def blobs_to_markers(im_shape, blobs):
 
 def check_im(im):
   """Convert image to float if it is not a float array """
+
   if im is None:
     return None
 
   if im.dtype != np.dtype('float'):
-    im = convert_to_double(im, divideby=setting.max_px_val)
+    im = im.astype(float)/setting.max_px_val
 
   return im
-
-def convert_to_double(im, divideby=1):
-  return im.astype(float)/divideby
-
-def drop_zero(lst):
-  """Returns list without 0 element"""
-
-  nonzero = [el for el in lst if el != 0]
-
-  return nonzero
 
 def filter_median(im, filter_size):
   """
@@ -122,7 +112,17 @@ def find_blobs(im, p):
   return blobs
 
 def keep_regions(im, labels, bg_val=0):
-  """Keep regions with label in given list from labeled image"""
+  """
+  Keep regions with label in given list from segmentation image
+  
+  Args:
+    im (label ndarray): segmentation image
+    labels (int list): list of labels of objects to keep
+    bg_val (int): value of background region
+  
+  Returns:
+    label ndarray: segmentation image with only objects in labels list
+  """
 
   new_im = im.copy()
   new_im[~np.isin(new_im, labels)] = bg_val
@@ -130,14 +130,33 @@ def keep_regions(im, labels, bg_val=0):
   return new_im
 
 def imthresh(im, thresh):
-  """Sets pixels in image below threshold value to 0"""
+  """
+  Sets pixels in image below threshold value to 0
+
+  Args:
+    im (ndarray): image
+    thresh (float): threshold
+
+  Returns: 
+    ndarray: thresholded image
+  """
   
   thresh_im = im.copy()
   thresh_im[thresh_im < thresh] = 0
   return thresh_im
 
 def mask_im(im, mask, val=0):
-  """Sets pixels not in mask to 0 (or val) in image"""
+  """
+  Sets pixels not in mask to 0 (or val) in image
+  
+  Args:
+    im (ndarray): image
+    mask (bool ndarray): mask where 1 indicates regions to keep
+    val (int): value to set regions outside of mask
+  
+  Returns:
+    ndarray: masked image
+  """
 
   masked_im = im.copy() 
   masked_im[mask == 0] = val
@@ -145,14 +164,23 @@ def mask_im(im, mask, val=0):
 
 def nonzero_list(im):
   """Returns image pixels as a list of unique labels without the 0s"""
+
   uniques = list(np.unique(im))
-  nonzero = drop_zero(uniques)
+  nonzero = [el for el in uniques if el != 0]
   return nonzero
 
-def overlap_regions(im, mask, partial_ratio, extra_return=False):
+def overlap_regions(im, mask, partial_ratio):
   """
   Filter out objects partially in the mask. Partial objects are defined as objects
   where ratio of the area outside the mask to the area inside the mask > partial_ratio
+
+  Args:
+    im (label ndarray): segmentation image
+    mask (bool ndarray): mask where 1 indicates regions to keep
+    partial_ratio (float): ratio of area outside the mask to area inside the mask
+
+  Returns:
+    labeled ndarray: containing objects considered in the mask
   """
 
   im_in = mask_im(im, mask)
@@ -181,13 +209,20 @@ def overlap_regions(im, mask, partial_ratio, extra_return=False):
 
   im_filtered = remove_regions(im_potential, remove_labels)
 
-  if extra_return:
-    return im_in, im_out, im_filtered
-  else:
-    return im_filtered
+  return im_filtered
 
 def remove_regions(im, labels, bg_val=0):
-  """Remove regions with label in given list from labeled image"""
+  """
+  Remove regions with label in given list from segmentation image
+  
+  Args:
+    im (label ndarray): segmentation image
+    labels (int list): list of labels of objects to be removed
+    bg_val (int): value of background region
+
+  Returns:
+    ndarray: segmentation image without objects in labels list
+  """
 
   new_im = im.copy()
   new_im[np.isin(new_im, labels)] = bg_val
@@ -233,7 +268,7 @@ def remove_small_objects(im, min_size):
     return morphology.remove_small_objects(im, min_size=min_size)
 
 def subtract(im1, im2):
-  """Subtract two images. Pixel value cannot go below 0"""
+  """Subtract two images (im1-im2). Pixel value cannot go below 0"""
 
   im = im1 - im2
   im[im<0] = 0

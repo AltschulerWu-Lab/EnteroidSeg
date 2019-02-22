@@ -1,4 +1,4 @@
-name: enteroid_analysis
+name: enteroidseg
 channels:
 - defaults
 dependencies:
