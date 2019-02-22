@@ -10,11 +10,6 @@ from scipy import ndimage as ndi
 from skimage import color, filters, io, measure, morphology, restoration, segmentation
 import warnings
 
-# TODO: delete this
-os.chdir('/Users/ichen/Dropbox/AWLab/manucript/2018_methods/EnteroidSeg/enteroidseg')
-import sys
-sys.path.append('/Users/ichen/Dropbox/AWLab/manucript/2018_methods/EnteroidSeg/enteroidseg')
-
 from utils import imfuns, setting
 
 class Segmentor:
