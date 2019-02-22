@@ -6,8 +6,8 @@ dna:
 
   # Smooth
 
-  BILATERAL_SIGMA_COLOR: 0.05
-  BILATERAL_SIGMA_SPATIAL: 1
+  BILATERAL_SIGMA_COLOR: 0.1
+  BILATERAL_SIGMA_SPATIAL: 3
 
   # Threshold
 
@@ -16,35 +16,34 @@ dna:
   # Sparse Segmentation
 
   LOG_SPARSE:
-    MIN_SIG: 2 #
-    MAX_SIG: 3 #
-    NUM_SIG: 9 #
-    THRESH: 0.01
-    OVERLAP: 0.1 #
+    MIN_SIG: 5 
+    MAX_SIG: 8
+    NUM_SIG: 4
+    THRESH: 0.1
+    OVERLAP: 0.3
 
   WATERSHED_CONN: [[0,1,0],[1,1,1],[0,1,0]]
   WATERSHED_COMPACTNESS: 1000
-  WATERSHED_MIN_SZ: 15 #
+  WATERSHED_MIN_SZ: 30
 
   # Clump Detection
 
-  SEG_SINGLE_MIN_SZ: 100 # min size of single cells #
-  SEG_SINGLE_MAX_SZ: 150 # max size of single cells #
+  SEG_SINGLE_MIN_SZ: 300 
+  SEG_SINGLE_MAX_SZ: 400
 
-  SEG_CLUMP_SOLIDITY: 0.95
+  SEG_CLUMP_SOLIDITY: 0.75
 
-  SEG_CLOSE_HOLES: 2
+  SEG_CLOSE_HOLES: 3
 
   # Dense Segmentation
 
   LOG_DENSE:
-    MIN_SIG: 2 #
-    MAX_SIG: 2 #
-    NUM_SIG: 2 #
-    THRESH: 0.01
-    OVERLAP: 0
+    MIN_SIG: 2
+    MAX_SIG: 6
+    NUM_SIG: 5
+    THRESH: 0.15
+    OVERLAP: 0.01
   
-
 # ================
 # EdU Segmentation
 # ================
@@ -52,42 +51,44 @@ dna:
 edu:
 
   # Smooth
-  
-  BILATERAL_SIGMA_COLOR: 0.05
-  BILATERAL_SIGMA_SPATIAL: 1
+
+  BILATERAL_SIGMA_COLOR: 0.1
+  BILATERAL_SIGMA_SPATIAL: 3
 
   # Threshold
 
-  THRESHOLD_FACTOR: 0.75
+  THRESHOLD_FACTOR: 0.5
 
   # Sparse Segmentation
+
   LOG_SPARSE:
-    MIN_SIG: 2
-    MAX_SIG: 3
-    NUM_SIG: 9
-    THRESH: 0
-    OVERLAP: 0.1
+    MIN_SIG: 5 
+    MAX_SIG: 7
+    NUM_SIG: 3
+    THRESH: 0.1
+    OVERLAP: 0.3
 
   WATERSHED_CONN: [[0,1,0],[1,1,1],[0,1,0]]
-  WATERSHED_MIN_SZ: 15
   WATERSHED_COMPACTNESS: 1000
-
-  # Dense Segmentation
-  LOG_DENSE:
-    MIN_SIG: 2
-    MAX_SIG: 2
-    NUM_SIG: 2
-    THRESH: 0
-    OVERLAP: 0.05
+  WATERSHED_MIN_SZ: 30
 
   # Clump Detection
 
-  SEG_SINGLE_MIN_SZ: 75 # min size of single cells
-  SEG_SINGLE_MAX_SZ: 150 # max size of single cells
+  SEG_SINGLE_MIN_SZ: 300 
+  SEG_SINGLE_MAX_SZ: 400
 
-  SEG_CLUMP_SOLIDITY: 0.9
+  SEG_CLUMP_SOLIDITY: 0.8
 
-  SEG_CLOSE_HOLES: 2
+  SEG_CLOSE_HOLES: 3
+
+  # Dense Segmentation
+
+  LOG_DENSE:
+    MIN_SIG: 2
+    MAX_SIG: 5
+    NUM_SIG: 4
+    THRESH: 0.1
+    OVERLAP: 0.01
 
 # ===================
 # Goblet Segmentation
@@ -124,17 +125,16 @@ crypt:
   # Crypt Threshold
 
   DNA_FACTOR: 0.3
-  THRESH: 0.07
+  THRESH: 0.1
 
   # Crypt Processing
   
-  MORPH_CLOSING_SZ: 4
-  MORPH_OPENING_SZ: 2
-  MIN_SZ: 400
+  MORPH_CLOSING_SZ: 8
+  MORPH_OPENING_SZ: 4
+  MIN_SZ: 2000
 
 stem:
 
   # Identify Stem 
   
   PARTIAL_RATIO: 1.5
-  PANETH: False
