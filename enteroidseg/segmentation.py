@@ -2,6 +2,8 @@
 Cell-type specific segmentation pipelines
 """
 
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 plt.rcParams['image.cmap'] = u'Greys_r'
 import numpy as np
